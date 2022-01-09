@@ -39,7 +39,7 @@ Use your favourite package manager to install this library. Packer example:
 ```lua
 use({
   "arsham/indent-tools.nvim",
-  requires = { "arshlib.nvim" },
+  requires = { "arsham/arshlib.nvim" },
   config = function() require("indent-tools").config({}) end,
 })
 ```
@@ -77,7 +77,7 @@ event is fired. Packer example:
 ```lua
 use({
   "arsham/indent-tools.nvim",
-  requires = { "arshlib.nvim" },
+  requires = { "arsham/arshlib.nvim" },
   config = function() require("indent-tools").config({}) end,
   keys = { "]=", "[=", { "v", "ii" }, { "o", "ii" } },
 })
