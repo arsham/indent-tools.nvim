@@ -136,7 +136,7 @@ end
 --}}}
 
 local defaults = { --{{{
-  normal = { up = "[=", down = "]=" },
+  normal = { up = "[i", down = "]i" },
   textobj = "ii",
 }
 --}}}

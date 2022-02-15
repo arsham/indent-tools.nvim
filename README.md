@@ -14,7 +14,7 @@ This Neovim plugin provides mappings and textobj for indentations.
 
 ## Demo
 
-Jumping along the indents (`[=`, `]=`):
+Jumping along the indents (`[i`, `]i`):
 
 ![jumping](https://user-images.githubusercontent.com/428611/148661970-0aad20f2-61ce-4347-8971-6147556a1603.gif)
 
@@ -62,8 +62,8 @@ Here is the default settings:
 ```lua
 {
   normal = {
-    up   = "[=",
-    down = "]=",
+    up   = "[i",
+    down = "]i",
   },
   textobj = "ii",
 }
@@ -79,7 +79,7 @@ use({
   "arsham/indent-tools.nvim",
   requires = { "arsham/arshlib.nvim" },
   config = function() require("indent-tools").config({}) end,
-  keys = { "]=", "[=", { "v", "ii" }, { "o", "ii" } },
+  keys = { "]i", "[i", { "v", "ii" }, { "o", "ii" } },
 })
 ```
 
