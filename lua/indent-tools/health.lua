@@ -1,5 +1,5 @@
 local M = {}
-local health = require("health")
+local health = vim.health or require("health")
 
 M.check = function()
   health.report_start("Indent Tool Health Check")

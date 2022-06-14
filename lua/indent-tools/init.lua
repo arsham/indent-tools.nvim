@@ -143,7 +143,7 @@ local defaults = { --{{{
 
 return {
   config = function(opts) --{{{
-    opts = vim.tbl_extend("force", defaults, opts)
+    opts = vim.tbl_deep_extend("force", defaults, opts)
     vim.validate({
       opts = { opts, "table" },
       normal = { opts.normal, { "table", "nil", "boolean" } },
