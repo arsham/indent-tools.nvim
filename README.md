@@ -18,7 +18,7 @@ Jumping along the indents (`[i`, `]i`):
 
 ![jumping](https://user-images.githubusercontent.com/428611/148661970-0aad20f2-61ce-4347-8971-6147556a1603.gif)
 
-Text object (`dii`, `yii`, `vii`, etc.):
+Text object (`dii`, `cai`, `yii`, `vai`, etc.):
 
 ![textobj](https://user-images.githubusercontent.com/428611/148661973-2d3cccad-715f-4f1e-a277-feb2e85396a9.gif)
 
@@ -65,7 +65,10 @@ Here is the default settings:
     up   = "[i",
     down = "]i",
   },
-  textobj = "ii",
+  textobj = {
+    ii = "ii",
+    ai = "ai",
+  },
 }
 ```
 

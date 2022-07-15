@@ -96,12 +96,15 @@ end
 
 ---Selects all lines with equal or higher indents to the current line in line
 -- visual mode. It ignores any empty lines.
-local function in_indent() --{{{
+-- @param around boolean? if true it will include empty lines around the
+-- indentation.
+local function in_indent(around) --{{{
   local cur_line = vim.api.nvim_win_get_cursor(0)[1]
   local cur_indent = vim.fn.indent(cur_line)
   local total_lines = vim.api.nvim_buf_line_count(0)
 
   local first_line = cur_line
+  local first_non_empty_line = cur_line
   for i = cur_line, 0, -1 do
     if cur_indent == 0 and #vim.fn.getline(i) == 0 then
       -- If we are at column zero, we will stop at an empty line.
@@ -112,11 +115,13 @@ local function in_indent() --{{{
       if indent < cur_indent then
         break
       end
+      first_non_empty_line = i
     end
     first_line = i
   end
 
   local last_line = cur_line
+  local last_non_empty_line = cur_line
   for i = cur_line, total_lines, 1 do
     if cur_indent == 0 and #vim.fn.getline(i) == 0 then
       break
@@ -126,10 +131,15 @@ local function in_indent() --{{{
       if indent < cur_indent then
         break
       end
+      last_non_empty_line = i
     end
     last_line = i
   end
 
+  if not around then
+    first_line = first_non_empty_line
+    last_line = last_non_empty_line
+  end
   local sequence = string.format("%dgg0o%dgg$V", first_line, last_line)
   quick.normal("xt", sequence)
 end
@@ -137,9 +147,37 @@ end
 
 local defaults = { --{{{
   normal = { up = "[i", down = "]i" },
-  textobj = "ii",
+  textobj = { ii = "ii", ai = "ai" },
 }
 --}}}
+
+local function setup_textobj(opts)
+  vim.validate({
+    opts = { opts, "table" },
+    ii = { opts.ii, { "string", "nil", "boolean" } },
+    ai = { opts.ai, { "string", "nil", "boolean" } },
+  })
+
+  if opts.ii then
+    local o = { silent = true, desc = "in indentation block" }
+    vim.keymap.set("v", opts.ii, function()
+      in_indent(false)
+    end, o)
+    vim.keymap.set("o", opts.ii, function()
+      quick.normal("x", "v" .. opts.ii)
+    end, o)
+  end
+
+  if opts.ai then
+    local o = { silent = true, desc = "around indentation block" }
+    vim.keymap.set("v", opts.ai, function()
+      in_indent(true)
+    end, o)
+    vim.keymap.set("o", opts.ai, function()
+      quick.normal("x", "v" .. opts.ai)
+    end, o)
+  end
+end
 
 return {
   config = function(opts) --{{{
@@ -149,7 +187,7 @@ return {
       normal = { opts.normal, { "table", "nil", "boolean" } },
       normal_up = { opts.normal.up, { "string", "nil", "boolean" } },
       normal_down = { opts.normal.down, { "string", "nil", "boolean" } },
-      textobj = { opts.textobj, { "string", "nil", "boolean" } },
+      textobj = { opts.textobj, { "table", "nil", "boolean" } },
     })
 
     if opts then
@@ -168,15 +206,7 @@ return {
       end
 
       if opts.textobj then
-        vim.keymap.set(
-          "v",
-          opts.textobj,
-          in_indent,
-          { silent = true, desc = "in indentation block" }
-        )
-        vim.keymap.set("o", opts.textobj, function()
-          quick.normal("x", "v" .. opts.textobj)
-        end, { desc = "in indentation block" })
+        setup_textobj(opts.textobj)
       end
     end
   end,
