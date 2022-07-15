@@ -130,7 +130,7 @@ local function in_indent() --{{{
     last_line = i
   end
 
-  local sequence = string.format("%dgg0o%dgg$$", first_line, last_line)
+  local sequence = string.format("%dgg0o%dgg$V", first_line, last_line)
   quick.normal("xt", sequence)
 end
 --}}}
