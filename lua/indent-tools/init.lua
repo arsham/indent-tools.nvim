@@ -193,14 +193,20 @@ return {
     if opts then
       if opts.normal then
         if opts.normal.down then
-          vim.keymap.set("n", opts.normal.down, function()
+          vim.keymap.set({ "n", "x" }, opts.normal.down, function()
             jump_indent(true)
+          end, { desc = "jump down along the indent" })
+          vim.keymap.set("o", opts.normal.down, function()
+            quick.normal("x", "V" .. opts.normal.down)
           end, { desc = "jump down along the indent" })
         end
 
         if opts.normal.up then
-          vim.keymap.set("n", opts.normal.up, function()
+          vim.keymap.set({ "n", "x" }, opts.normal.up, function()
             jump_indent(false)
+          end, { desc = "jump up along the indent" })
+          vim.keymap.set("o", opts.normal.up, function()
+            quick.normal("x", "V" .. opts.normal.up)
           end, { desc = "jump up along the indent" })
         end
       end
