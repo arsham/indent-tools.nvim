@@ -160,7 +160,7 @@ local function setup_textobj(opts)
 
   if opts.ii then
     local o = { silent = true, desc = "in indentation block" }
-    vim.keymap.set("v", opts.ii, function()
+    vim.keymap.set("x", opts.ii, function()
       in_indent(false)
     end, o)
     vim.keymap.set("o", opts.ii, function()
@@ -170,7 +170,7 @@ local function setup_textobj(opts)
 
   if opts.ai then
     local o = { silent = true, desc = "around indentation block" }
-    vim.keymap.set("v", opts.ai, function()
+    vim.keymap.set("x", opts.ai, function()
       in_indent(true)
     end, o)
     vim.keymap.set("o", opts.ai, function()
