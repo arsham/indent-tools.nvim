@@ -8,6 +8,8 @@ This Neovim plugin provides mappings and textobj for indentations.
 1. [Demo](#demo)
 2. [Requirements](#requirements)
 3. [Installation](#installation)
+   - [Lazy](#lazy)
+   - [Packer](#packer)
    - [Config](#config)
    - [Lazy Loading](#lazy-loading)
 4. [License](#license)
@@ -25,7 +27,7 @@ Text object (`dii`, `cai`, `yii`, `vai`, etc.):
 ## Requirements
 
 This library supports [Neovim
-0.7.0](https://github.com/neovim/neovim/releases/tag/v0.7.0) or newer.
+v0.7.0](https://github.com/neovim/neovim/releases/tag/v0.7.0) or newer.
 
 This plugin depends are the following libraries. Please make sure to add them
 as dependencies in your package manager:
@@ -34,13 +36,29 @@ as dependencies in your package manager:
 
 ## Installation
 
-Use your favourite package manager to install this library. Packer example:
+Use your favourite package manager to install this library.
+
+### Lazy
+
+```lua
+{
+  "arsham/indent-tools.nvim",
+  dependencies = { "arsham/arshlib.nvim" },
+  config = true,
+  -- or to provide configuration
+  -- config = { normal = {..}, textobj = {..}},
+}
+```
+
+### Packer
 
 ```lua
 use({
-  "arsham/indent-tools.nvim",
-  requires = { "arsham/arshlib.nvim" },
-  config = function() require("indent-tools").config({}) end,
+	"arsham/indent-tools.nvim",
+	requires = { "arsham/arshlib.nvim" },
+	config = function()
+		require("indent-tools").config({})
+	end,
 })
 ```
 
@@ -53,7 +71,7 @@ To disable set them to `false`. For example:
 
 ```lua
 require("indent-tools").config({
-  textobj = false,
+	textobj = false,
 })
 ```
 
@@ -79,10 +97,12 @@ event is fired. Packer example:
 
 ```lua
 use({
-  "arsham/indent-tools.nvim",
-  requires = { "arsham/arshlib.nvim" },
-  config = function() require("indent-tools").config({}) end,
-  keys = { "]i", "[i", { "v", "ii" }, { "o", "ii" } },
+	"arsham/indent-tools.nvim",
+	requires = { "arsham/arshlib.nvim" },
+	config = function()
+		require("indent-tools").config({})
+	end,
+	keys = { "]i", "[i", { "v", "ii" }, { "o", "ii" } },
 })
 ```
 

@@ -179,44 +179,47 @@ local function setup_textobj(opts)
   end
 end
 
-return {
-  config = function(opts) --{{{
-    opts = vim.tbl_deep_extend("force", defaults, opts)
-    vim.validate({
-      opts = { opts, "table" },
-      normal = { opts.normal, { "table", "nil", "boolean" } },
-      normal_up = { opts.normal.up, { "string", "nil", "boolean" } },
-      normal_down = { opts.normal.down, { "string", "nil", "boolean" } },
-      textobj = { opts.textobj, { "table", "nil", "boolean" } },
-    })
+local function setup(opts) --{{{
+  opts = vim.tbl_deep_extend("force", defaults, opts or {})
+  vim.validate({
+    opts = { opts, "table" },
+    normal = { opts.normal, { "table", "nil", "boolean" } },
+    normal_up = { opts.normal.up, { "string", "nil", "boolean" } },
+    normal_down = { opts.normal.down, { "string", "nil", "boolean" } },
+    textobj = { opts.textobj, { "table", "nil", "boolean" } },
+  })
 
-    if opts then
-      if opts.normal then
-        if opts.normal.down then
-          vim.keymap.set({ "n", "x" }, opts.normal.down, function()
-            jump_indent(true)
-          end, { desc = "jump down along the indent" })
-          vim.keymap.set("o", opts.normal.down, function()
-            quick.normal("x", "V" .. opts.normal.down)
-          end, { desc = "jump down along the indent" })
-        end
-
-        if opts.normal.up then
-          vim.keymap.set({ "n", "x" }, opts.normal.up, function()
-            jump_indent(false)
-          end, { desc = "jump up along the indent" })
-          vim.keymap.set("o", opts.normal.up, function()
-            quick.normal("x", "V" .. opts.normal.up)
-          end, { desc = "jump up along the indent" })
-        end
+  if opts then
+    if opts.normal then
+      if opts.normal.down then
+        vim.keymap.set({ "n", "x" }, opts.normal.down, function()
+          jump_indent(true)
+        end, { desc = "jump down along the indent" })
+        vim.keymap.set("o", opts.normal.down, function()
+          quick.normal("x", "V" .. opts.normal.down)
+        end, { desc = "jump down along the indent" })
       end
 
-      if opts.textobj then
-        setup_textobj(opts.textobj)
+      if opts.normal.up then
+        vim.keymap.set({ "n", "x" }, opts.normal.up, function()
+          jump_indent(false)
+        end, { desc = "jump up along the indent" })
+        vim.keymap.set("o", opts.normal.up, function()
+          quick.normal("x", "V" .. opts.normal.up)
+        end, { desc = "jump up along the indent" })
       end
     end
-  end,
-  --}}}
+
+    if opts.textobj then
+      setup_textobj(opts.textobj)
+    end
+  end
+end
+--}}}
+
+return {
+  setup = setup,
+  config = setup,
 }
 
 -- vim: fdm=marker fdl=0
