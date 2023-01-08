@@ -54,11 +54,11 @@ Use your favourite package manager to install this library.
 
 ```lua
 use({
-	"arsham/indent-tools.nvim",
-	requires = { "arsham/arshlib.nvim" },
-	config = function()
-		require("indent-tools").config({})
-	end,
+  "arsham/indent-tools.nvim",
+  requires = { "arsham/arshlib.nvim" },
+  config = function()
+    require("indent-tools").config({})
+  end,
 })
 ```
 
@@ -71,7 +71,7 @@ To disable set them to `false`. For example:
 
 ```lua
 require("indent-tools").config({
-	textobj = false,
+  textobj = false,
 })
 ```
 
@@ -97,12 +97,12 @@ event is fired. Packer example:
 
 ```lua
 use({
-	"arsham/indent-tools.nvim",
-	requires = { "arsham/arshlib.nvim" },
-	config = function()
-		require("indent-tools").config({})
-	end,
-	keys = { "]i", "[i", { "v", "ii" }, { "o", "ii" } },
+  "arsham/indent-tools.nvim",
+  requires = { "arsham/arshlib.nvim" },
+  config = function()
+    require("indent-tools").config({})
+  end,
+  keys = { "]i", "[i", { "v", "ii" }, { "o", "ii" } },
 })
 ```
 
