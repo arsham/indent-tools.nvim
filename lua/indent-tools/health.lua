@@ -1,14 +1,13 @@
 local M = {}
-local health = vim.health or require("health")
 
 M.check = function()
-  health.report_start("Indent Tool Health Check")
+  vim.health.start("Indent Tool Health Check")
   if not pcall(require, "arshlib") then
-    health.report_error("arshlib.nvim was not found", {
+    vim.health.error("arshlib.nvim was not found", {
       'Please install "arsham/arshlib.nvim"',
     })
   else
-    health.report_ok("arshlib.nvim is installed")
+    vim.health.ok("arshlib.nvim is installed")
   end
 end
 
