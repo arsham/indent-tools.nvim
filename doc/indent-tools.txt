@@ -1,0 +1,199 @@
+
+*indent-tools.txt*                                     Jump along indentations
+
+                   This Neovim plugin provides mappings
+                   and textobj for indentations capable
+                   of repeating jumps with `;` and `,`;
+
+
+          ____          __           __     ______            __            ~
+         /  _/___  ____/ /__  ____  / /_   /_  __/___  ____  / /____        ~
+         / // __ \/ __  / _ \/ __ \/ __/    / / / __ \/ __ \/ / ___/        ~
+       _/ // / / / /_/ /  __/ / / / /_     / / / /_/ / /_/ / (__  )         ~
+      /___/_/ /_/\__,_/\___/_/ /_/\__/    /_/  \____/\____/_/____/          ~
+
+
+
+Author:   Arsham Shirvani <arsham@duck.com>
+Homepage: <https://github.com/arsham/indent-tools.nvim>
+License:  MIT license
+
+==============================================================================
+CONTENTS                                               *indent-tools-contents*
+
+1. Introduction .................................. |indent-tools-introduction|
+2. Requirements .................................. |indent-tools-requirements|
+3. Installation .................................. |indent-tools-installation|
+   - Lazy ................................... |indent-tools-installation-lazy|
+   - Packer ............................... |indent-tools-installation-packer|
+   - Lazy Loading ................... |indent-tools-installation-lazy-loading|
+   - Configuration .............................. |indent-tools-configuration|
+4. Mappings .......................................... |indent-tools-mappings|
+5. Textobjects ........................................ |indent-tools-textobj|
+6. License ............................................ |indent-tools-license|
+
+==============================================================================
+INTRODUCTION                                       *indent-tools-introduction*
+
+This Neovim plugin provides mappings and textobj for indentations capable of
+repeating jumps with `;` and `,`;
+
+==============================================================================
+REQUIREMENTS                                       *indent-tools-requirements*
+
+This library supports Neovim v0.7.0 or newer.
+
+This library depends are the following libraries. Please make sure to add them
+as dependencies in your package manager:
+
+ Project         Link                                      Reason for using
+------------------------------------------------------------------------------
+ arshlib.nvim  <https://github.com/arsham/arshlib.nvim>   common library
+ nvim-treesitter-textobjects                              for repeatable jumps
+               <https://github.com/arsham/listish.nvim>   (Optional)
+
+==============================================================================
+INSTALLATION                                       *indent-tools-installation*
+
+Use your favourite package manager to install this library.
+
+LAZY                                          *indent-tools-installation-lazy*
+------------------------------------------------------------------------------
+
+>lua
+  {
+    "arsham/indent-tools.nvim",
+    dependencies = {
+      "arsham/arshlib.nvim",
+      "nvim-treesitter/nvim-treesitter-textobjects",
+    },
+    config = true,
+    -- or to provide configuration
+    -- config = { normal = {..}, textobj = {..}},
+  }
+<
+
+PACKER                                      *indent-tools-installation-packer*
+------------------------------------------------------------------------------
+
+>lua
+  use({
+    "arsham/indent-tools.nvim",
+    requires = {
+      "arsham/arshlib.nvim",
+      "nvim-treesitter/nvim-treesitter-textobjects",
+    },
+    config = function()
+      require("indent-tools").config({})
+    end,
+  })
+<
+
+LAZY LOADING                          *indent-tools-installation-lazy-loading*
+------------------------------------------------------------------------------
+
+You can let your package manager to load this plugin when a key-mapping
+event is fired.
+
+For Packer:
+
+>lua
+  use({
+    "arsham/indent-tools.nvim",
+    requires = { "arsham/arshlib.nvim" },
+    config = function()
+      require("indent-tools").config({})
+    end,
+    keys = { "]i", "[i", { "v", "ii" }, { "o", "ii" } },
+  })
+<
+
+For Lazy:
+
+>lua
+  {
+    "arsham/indent-tools.nvim",
+    dependencies = {
+      "arsham/arshlib.nvim",
+      "nvim-treesitter/nvim-treesitter-textobjects",
+    },
+    config = true,
+    keys = { "]i", "[i", { "v", "ii" }, { "o", "ii" } },
+  }
+<
+
+
+CONFIGURATION                                     *indent-tools-configuration*
+------------------------------------------------------------------------------
+
+By default this pluging adds all necessary mappings. However you can change or
+disable them to your liking.
+
+To disable set them to `false`. For example:
+
+>lua
+  require("indent-tools").config({
+    textobj = false,
+  })
+<
+
+Here is the default settings:
+
+>lua
+  {
+    normal = {
+      up   = "[i",
+      down = "]i",
+      repeatable = true, -- requires nvim-treesitter-textobjects
+    },
+    textobj = {
+      ii = "ii",
+      ai = "ai",
+    },
+  }
+<
+
+If repeatable is set to true and _nvim-treesitter-textobjects_ plugin is
+installed, you can repeat the jumps back and forth with |;| and |,|.
+
+
+------------------------------------------------------------------------------
+MAPPINGS                                               *indent-tools-mappings*
+
+]i           Jump along the indentation forwards             *indent-tools_]i*
+[i           Jump along the indentation backwards            *indent-tools_[i*
+
+
+------------------------------------------------------------------------------
+TEXT OBJECTS                                            *indent-tools-textobj*
+
+*o_ii*       In indentation                                *indent-tools_o_ii*
+*o_ai*       Around indentation                            *indent-tools_o_ai*
+
+
+==============================================================================
+LICENSE                                                 *indent-tools-license*
+
+MIT License
+
+Copyright (c) 2023 Arsham Shirvani
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+vim:tw=78:ts=8:ft=help:norl:
