@@ -3,7 +3,8 @@
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/arsham/indent-tools.nvim)
 ![License](https://img.shields.io/github/license/arsham/indent-tools.nvim)
 
-This Neovim plugin provides mappings and textobj for indentations.
+This Neovim plugin provides mappings and textobj for indentations capable of
+repeating jumps with `;` and `,`;
 
 1. [Demo](#demo)
 2. [Requirements](#requirements)
@@ -12,6 +13,8 @@ This Neovim plugin provides mappings and textobj for indentations.
    - [Packer](#packer)
    - [Config](#config)
    - [Lazy Loading](#lazy-loading)
+     - [Packer Lazy Loading](#packer-lazy-loading)
+     - [Lazy Lazy Loading](#lazy-lazy-loading)
 4. [License](#license)
 
 ## Demo
@@ -33,6 +36,9 @@ This plugin depends are the following libraries. Please make sure to add them
 as dependencies in your package manager:
 
 - [arshlib.nvim](https://github.com/arsham/arshlib.nvim)
+- (Optional) [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
+
+The _nvim-treesitter-textobjects_ is only used for repeatable jumps.
 
 ## Installation
 
@@ -43,7 +49,10 @@ Use your favourite package manager to install this library.
 ```lua
 {
   "arsham/indent-tools.nvim",
-  dependencies = { "arsham/arshlib.nvim" },
+  dependencies = {
+    "arsham/arshlib.nvim",
+    "nvim-treesitter/nvim-treesitter-textobjects",
+  },
   config = true,
   -- or to provide configuration
   -- config = { normal = {..}, textobj = {..}},
@@ -55,7 +64,10 @@ Use your favourite package manager to install this library.
 ```lua
 use({
   "arsham/indent-tools.nvim",
-  requires = { "arsham/arshlib.nvim" },
+  requires = {
+    "arsham/arshlib.nvim",
+    "nvim-treesitter/nvim-treesitter-textobjects",
+  },
   config = function()
     require("indent-tools").config({})
   end,
@@ -82,6 +94,7 @@ Here is the default settings:
   normal = {
     up   = "[i",
     down = "]i",
+    repeatable = true, -- requires nvim-treesitter-textobjects
   },
   textobj = {
     ii = "ii",
@@ -90,10 +103,15 @@ Here is the default settings:
 }
 ```
 
+If repeatable is set to true and _nvim-treesitter-textobjects_ plugin is
+installed, you can repeat the jumps back and forth with `;` and `,`.
+
 ### Lazy Loading
 
 You can let your package manager to load this plugin when a key-mapping
-event is fired. Packer example:
+event is fired.
+
+#### Packer Lazy Loading
 
 ```lua
 use({
@@ -104,6 +122,20 @@ use({
   end,
   keys = { "]i", "[i", { "v", "ii" }, { "o", "ii" } },
 })
+```
+
+#### Lazy Lazy Loading
+
+```lua
+{
+  "arsham/indent-tools.nvim",
+  dependencies = {
+    "arsham/arshlib.nvim",
+    "nvim-treesitter/nvim-treesitter-textobjects",
+  },
+  config = true,
+  keys = { "]i", "[i", { "v", "ii" }, { "o", "ii" } },
+}
 ```
 
 ## License

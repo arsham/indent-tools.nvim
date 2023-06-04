@@ -38,26 +38,26 @@ local function jump_indent(down) --{{{
     if line_len ~= 0 then
       -- Variable setup {{{
       -- stylua: ignore start
-      local indent      = vim.fn.indent(i)
-      local next_len    = #string.gsub(vim.fn.getline(i + step), "^%s+", "")
-      local next_indent = next_len > 0 and vim.fn.indent(i + step) or 0
-      local prev_empty  = #string.gsub(vim.fn.getline(i - step), "^%s+", "") == 0
-      local prev_indent = prev_empty and 0 or vim.fn.indent(i - step)
-      local far_indent  = next_unempty_line(i + step*2, step, barrier)
+      local indent             = vim.fn.indent(i)
+      local next_len           = #string.gsub(vim.fn.getline(i + step), "^%s+", "")
+      local next_indent        = next_len > 0 and vim.fn.indent(i + step) or 0
+      local prev_empty         = #string.gsub(vim.fn.getline(i - step), "^%s+", "") == 0
+      local prev_indent        = prev_empty and 0 or vim.fn.indent(i - step)
+      local far_indent         = next_unempty_line(i + step * 2, step, barrier)
 
-      local on_main_level      = indent        ==  main_indent
+      local on_main_level      = indent == main_indent
       local cruising           = on_main_level and in_move
-      local same_level         = indent        ==  prev_indent
-      local leveling_up        = indent        >   prev_indent
-      local will_go_up         = indent        <   next_indent
-      local may_go_up_the_main = next_indent   >=  main_indent
-      local will_go_down       = indent        >   next_indent
-      local goes_down_the_main = next_indent   <   main_indent
-      local later_will_go_down = indent        >   far_indent
-      local later_lower_main   = main_indent   >   far_indent
-      local prev_not_empty     = next_len      ~=  0
-      local next_is_empty      = next_len      ==  0
-      local road_block         = will_go_down  and prev_not_empty
+      local same_level         = indent == prev_indent
+      local leveling_up        = indent > prev_indent
+      local will_go_up         = indent < next_indent
+      local may_go_up_the_main = next_indent >= main_indent
+      local will_go_down       = indent > next_indent
+      local goes_down_the_main = next_indent < main_indent
+      local later_will_go_down = indent > far_indent
+      local later_lower_main   = main_indent > far_indent
+      local prev_not_empty     = next_len ~= 0
+      local next_is_empty      = next_len == 0
+      local road_block         = will_go_down and prev_not_empty
       -- stylua: ignore end
       --}}}
 
@@ -94,6 +94,38 @@ local function jump_indent(down) --{{{
 end
 -- }}}
 
+local function setup_jumps(opts)
+  local down_fn, up_fn
+  if opts.normal.repeatable then
+    local ts_repeat_move = require("nvim-treesitter.textobjects.repeatable_move")
+    -- make sure forward function comes first
+    down_fn, up_fn = ts_repeat_move.make_repeatable_move_pair(function()
+      jump_indent(true)
+    end, function()
+      jump_indent(false)
+    end)
+  else
+    down_fn = function()
+      jump_indent(true)
+    end
+    up_fn = function()
+      jump_indent(false)
+    end
+  end
+  if opts.normal.down then
+    vim.keymap.set({ "n", "x" }, opts.normal.down, down_fn, { desc = "jump down along the indent" })
+    vim.keymap.set("o", opts.normal.down, function()
+      quick.normal("x", "V" .. opts.normal.down)
+    end, { desc = "jump down along the indent" })
+  end
+
+  if opts.normal.up then
+    vim.keymap.set({ "n", "x" }, opts.normal.up, up_fn, { desc = "jump up along the indent" })
+    vim.keymap.set("o", opts.normal.up, function()
+      quick.normal("x", "V" .. opts.normal.up)
+    end, { desc = "jump up along the indent" })
+  end
+end
 ---Selects all lines with equal or higher indents to the current line in line
 -- visual mode. It ignores any empty lines.
 -- @param around boolean? if true it will include empty lines around the
@@ -145,8 +177,9 @@ local function in_indent(around) --{{{
 end
 --}}}
 
-local defaults = { --{{{
-  normal = { up = "[i", down = "]i" },
+local defaults = {
+  --{{{
+  normal = { up = "[i", down = "]i", repeatable = true },
   textobj = { ii = "ii", ai = "ai" },
 }
 --}}}
@@ -191,23 +224,18 @@ local function setup(opts) --{{{
 
   if opts then
     if opts.normal then
-      if opts.normal.down then
-        vim.keymap.set({ "n", "x" }, opts.normal.down, function()
-          jump_indent(true)
-        end, { desc = "jump down along the indent" })
-        vim.keymap.set("o", opts.normal.down, function()
-          quick.normal("x", "V" .. opts.normal.down)
-        end, { desc = "jump down along the indent" })
+      if opts.normal.repeatable then
+        local ok = pcall(require, "nvim-treesitter.textobjects.repeatable_move")
+        if not ok then
+          opts.normal.repeatable = false
+          vim.notify(
+            "You need to install nvim-treesitter-textobjects to use repeatable jumps.\n"
+            .. "To supress this notification set the normal.repeatable to false!",
+            vim.log.levels.WARN
+          )
+        end
       end
-
-      if opts.normal.up then
-        vim.keymap.set({ "n", "x" }, opts.normal.up, function()
-          jump_indent(false)
-        end, { desc = "jump up along the indent" })
-        vim.keymap.set("o", opts.normal.up, function()
-          quick.normal("x", "V" .. opts.normal.up)
-        end, { desc = "jump up along the indent" })
-      end
+      setup_jumps(opts)
     end
 
     if opts.textobj then
