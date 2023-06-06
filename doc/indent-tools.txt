@@ -167,8 +167,10 @@ MAPPINGS                                               *indent-tools-mappings*
 ------------------------------------------------------------------------------
 TEXT OBJECTS                                            *indent-tools-textobj*
 
-*o_ii*       In indentation                                *indent-tools_o_ii*
-*o_ai*       Around indentation                            *indent-tools_o_ai*
+                                                    *o_ii* *indent-tools_o_ii*
+o_ii                    In indentation
+                                                    *o_ai* *indent-tools_o_ai*
+o_ai                    Around indentation
 
 
 ==============================================================================

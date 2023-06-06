@@ -95,22 +95,20 @@ end
 -- }}}
 
 local function setup_jumps(opts)
-  local down_fn, up_fn
-  if opts.normal.repeatable then
-    local ts_repeat_move = require("nvim-treesitter.textobjects.repeatable_move")
+  local ok, ts_repeat_move = pcall(require, "nvim-treesitter.textobjects.repeatable_move")
+  local down_fn = function()
+    jump_indent(true)
+  end
+  local up_fn = function()
+    jump_indent(false)
+  end
+  if opts.normal.repeatable and ok then
     -- make sure forward function comes first
     down_fn, up_fn = ts_repeat_move.make_repeatable_move_pair(function()
       jump_indent(true)
     end, function()
       jump_indent(false)
     end)
-  else
-    down_fn = function()
-      jump_indent(true)
-    end
-    up_fn = function()
-      jump_indent(false)
-    end
   end
   if opts.normal.down then
     vim.keymap.set({ "n", "x" }, opts.normal.down, down_fn, { desc = "jump down along the indent" })
@@ -230,7 +228,7 @@ local function setup(opts) --{{{
           opts.normal.repeatable = false
           vim.notify(
             "You need to install nvim-treesitter-textobjects to use repeatable jumps.\n"
-            .. "To supress this notification set the normal.repeatable to false!",
+              .. "To supress this notification set the normal.repeatable to false!",
             vim.log.levels.WARN
           )
         end
