@@ -128,7 +128,7 @@ end
 -- visual mode. It ignores any empty lines.
 -- @param around boolean? if true it will include empty lines around the
 -- indentation.
-local function in_indent(around) --{{{
+local function in_indent(around, visual) --{{{
   local cur_line = vim.api.nvim_win_get_cursor(0)[1]
   local cur_indent = vim.fn.indent(cur_line)
   local total_lines = vim.api.nvim_buf_line_count(0)
@@ -170,7 +170,11 @@ local function in_indent(around) --{{{
     first_line = first_non_empty_line
     last_line = last_non_empty_line
   end
-  local sequence = string.format("%dgg0o%dgg$V", first_line, last_line)
+  local mode = "v0"
+  if visual then
+    mode = ""
+  end
+  local sequence = string.format("%dgg%so%dgg$V", first_line, mode, last_line)
   quick.normal("xt", sequence)
 end
 --}}}
@@ -191,21 +195,21 @@ local function setup_textobj(opts)
 
   if opts.ii then
     local o = { silent = true, desc = "in indentation block" }
-    vim.keymap.set("x", opts.ii, function()
+    vim.keymap.set("o", opts.ii, function()
       in_indent(false)
     end, o)
-    vim.keymap.set("o", opts.ii, function()
-      quick.normal("x", "v" .. opts.ii)
+    vim.keymap.set("x", opts.ii, function()
+      in_indent(false, true)
     end, o)
   end
 
   if opts.ai then
     local o = { silent = true, desc = "around indentation block" }
-    vim.keymap.set("x", opts.ai, function()
+    vim.keymap.set("o", opts.ai, function()
       in_indent(true)
     end, o)
-    vim.keymap.set("o", opts.ai, function()
-      quick.normal("x", "v" .. opts.ai)
+    vim.keymap.set("x", opts.ai, function()
+      in_indent(true, true)
     end, o)
   end
 end
