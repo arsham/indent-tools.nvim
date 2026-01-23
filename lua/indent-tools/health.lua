@@ -7,7 +7,10 @@ local libs = {
     fn = vim.health.error,
   },
   {
-    name = "nvim-treesitter.textobjects.repeatable_move",
+    names = {
+      "nvim-treesitter-textobjects.repeatable_move",
+      "nvim-treesitter.textobjects.repeatable_move",
+    },
     lib = "nvim-treesitter/nvim-treesitter-textobjects",
     fn = vim.health.warn,
   },
@@ -16,7 +19,15 @@ local libs = {
 M.check = function()
   vim.health.start("Indent Tool Health Check")
   for _, package in ipairs(libs) do
-    if not pcall(require, package.name) then
+    local names = package.names or { package.name }
+    local ok = false
+    for _, name in ipairs(names) do
+      ok = pcall(require, name)
+      if ok then
+        break
+      end
+    end
+    if not ok then
       package.fn(package.lib .. " was not found", {
         'Please install "' .. package.lib .. '"',
       })
